@@ -22,13 +22,21 @@ class LoginController extends Controller
             'password.required' => 'Password harus diisi'
         ]);
 
+        // jika user berhasil login maka akan masuk ke dashboard
         if(Auth::attempt($credentials)){
             $request->session()->regenerate();
             return redirect()->intended('/dashboard');
         }
 
+        // jika gagal (validasi tidak sesuai) maka akan muncul pesan pemberitahuan
         return back()->withErrors([
             'email' => 'Kredential yang anda masukan tidak sesuai dengan data kami.',
         ])->onlyInput('email');
     }
+
+    public function logout(Request $request) {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');}
 }
